@@ -56,6 +56,7 @@ if __name__ == '__main__':
         # Handle non-json response
         try:
             data = r.json()
+           # print(data)
         except ValueError:
             print("Error:  Non-json response")
             print("Response returned:")
@@ -69,6 +70,7 @@ if __name__ == '__main__':
         post_data = {"proof": new_proof, "id": id}
 
         r = requests.post(url=node + "/mine", json=post_data)
+        print(r)
         data = r.json()
 
         # TODO: If the server responds with a 'message' 'New Block Forged'

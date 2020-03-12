@@ -113,17 +113,17 @@ def mine():
         response =    {
             'message': 'proof or id not present'
         }
-        return jsonify(response), 500
-    else:
-        block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
-    if blockchain.valid_proof(block_string, blockchain.last_block['proof']):
-        response =    {
-            'message': 'this block was already mined'
-        }
-        return jsonify(response), 500
-    elif blockchain.valid_proof(block_string, data['proof']):
+        return jsonify(response), 400
+    # else:
+    block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
+    if blockchain.valid_proof(block_string, data.get('proof')):
+       response =    {
+           'message': 'this block was already mined'
+       }
+       return jsonify(response), 400
+    if blockchain.valid_proof(block_string, data.get('proof')):
         previous_hash = blockchain.hash(blockchain.last_block)
-        block = blockchain.new_block(data['proof'], previous_hash)
+        block = blockchain.new_block(data.get('proof'), previous_hash)
 
         response = {
             'message': "New Block Forged",
@@ -132,12 +132,13 @@ def mine():
             'proof': block['proof'],
             'previous_hash': block['previous_hash'],
         }
+        print(response)
         return jsonify(response), 200
     else:
         response =    {
             'message': 'the proof is not valid'
         }
-        return jsonify(response), 500
+        return jsonify(response), 200
 
 
 
@@ -155,6 +156,14 @@ def last_block():
         'last_block': blockchain.last_block
     }
     return jsonify(response), 200
+
+
+@app.route('/me', methods=['GET'])
+def hello():
+    return  jsonify({'hello': 'there'}), 200
+
+
+
 
 # Run the program on port 5000
 if __name__ == '__main__':
